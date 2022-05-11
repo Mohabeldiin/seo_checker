@@ -130,3 +130,6 @@ dmypy.json
 
 # vs code
 .vscode/
+
+# temp code runner
+tempCodeRunnerFile.py
