@@ -2,11 +2,6 @@
 import logging
 
 try:
-    import unittest
-except(ImportError, ModuleNotFoundError) as ex:
-    logging.error("Module validators not found")
-    raise ex("Module validators not found") from ex
-try:
     from modules.validators import url as url_validator
 except (ImportError, ModuleNotFoundError) as ex:
     logging.error("Module validators not found")
@@ -41,7 +36,7 @@ class _testData(object):
     START_NOW_BUTTON = "index-search-start index-button index-button--xl"
 
 
-class Seo(unittest.TestCase):
+class Seo(object):
     """foo"""
 
     def __init__(self, url):
@@ -49,10 +44,10 @@ class Seo(unittest.TestCase):
         super().__init__()
         self.test_data = _testData()
         self.test_data.url = self.__validate_url(url)
-        self.setUp()
+        self.set_up()
         self._logger.info("Initializing Seo")
 
-    def setUp(self):
+    def set_up(self):
         """set up selenium and logger
             for seo checker"""
         logging.basicConfig(
@@ -91,14 +86,6 @@ class Seo(unittest.TestCase):
         else:
             self.driver.maximize_window()
             self.driver.implicitly_wait(5)
-
-    def test_seo_no_account(self):
-        """foo"""
-        self._logger.info("Testing seo checker")
-
-    def tearDown(self):
-        """foo"""
-        pass
 
     def __validate_url(self, url: str) -> str:
         """validate the url
