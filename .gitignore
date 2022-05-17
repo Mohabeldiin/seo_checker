@@ -133,3 +133,6 @@ dmypy.json
 
 # temp code runner
 tempCodeRunnerFile.py
+
+# .idea
+.idea/
