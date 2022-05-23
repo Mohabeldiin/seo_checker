@@ -136,3 +136,6 @@ tempCodeRunnerFile.py
 
 # .idea
 .idea/
+
+# Log files
+logs/
