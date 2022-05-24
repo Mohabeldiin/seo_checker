@@ -68,30 +68,71 @@ class SEORanking():
             Raises:
                 Exception: if url is not string"""
         if url_validator(url):
-            self.__logger.info("Valid url: %s", url)
-            if url.startswith("http://"):
-                url = url[7:]
-            elif url.startswith("http://www."):
+            logger.info("Valid url: %s", url)
+            if url.startswith("http://www."):
                 url = url[11:]
-            elif url.startswith("https://"):
-                url = url[8:]
+            elif url.startswith("http://"):
+                url = url[7:]
             elif url.startswith("https://www."):
                 url = url[12:]
+            elif url.startswith("https://"):
+                url = url[8:]
             elif url.startswith("www."):
                 url = url[4:]
             if url.endswith("/"):
                 url = url[:-1]
-            self.__logger.debug("Returning url: %s", url)
+            logger.debug("Returning url: %s", url)
         else:
-            self.__logger.critical("Invalid url: %s", url)
+            logger.critical("Invalid url: %s", url)
             raise Exception("Invalid url")
         return url
 
-    def __setup_selenium(self):
+    @staticmethod
+    def __setup_selenium_driver(logger) -> webdriver.Chrome:
         """foo"""
-        self.__logger.debug("Setting up selenium")
+        logger.debug("Setting up selenium")
         options = webdriver.ChromeOptions()
         options.headless = True
+        try:
+            driver = webdriver.Chrome(
+                executable_path="C:\\Program Files (x86)\\chromedriver.exe", options=options)
+        except selenium_exceptions.WebDriverException:
+            try:
+                driver = webdriver.Chrome(
+                    executable_path="C:\\chromedriver.exe", options=options)
+            except selenium_exceptions.WebDriverException:
+                logger.critical("Chrome driver not found")
+                raise selenium_exceptions.WebDriverException(
+                    selenium_exceptions.WebDriverException.__str__
+                    )from selenium_exceptions.WebDriverException
+            except Exception:
+                logger.critical("Exception: %s", Exception)
+                raise Exception(f"Exception: {Exception}") from Exception
+            else:
+                driver.implicitly_wait(5)
+                logger.debug("Returning driver: %s", driver)
+        return driver
+
+    @staticmethod
+    def __open_seranking(logger, driver, url):
+        """foo"""
+        try:
+            driver.get(url)
+        except selenium_exceptions.TimeoutException:
+            logger.critical("TimeoutException")
+            raise selenium_exceptions.TimeoutException(
+                "TimeoutException") from selenium_exceptions.TimeoutException
+        except selenium_exceptions.WebDriverException:
+            logger.critical("Unable to open SE Ranking")
+            raise selenium_exceptions.WebDriverException(
+                "Unable to open SE Ranking") from selenium_exceptions.WebDriverException
+        except Exception:
+            logger.critical("Unable to open SE Ranking")
+            raise Exception("Unable to open SE Ranking") from Exception
+        else:
+            driver.maximize_window()
+            driver.implicitly_wait(5)
+
 
 if __name__ == '__main__':
     seo = SEORanking("https://www.google.com")
