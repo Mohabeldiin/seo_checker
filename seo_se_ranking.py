@@ -35,8 +35,9 @@ class SEORanking():
 
     def __init__(self, url: str):
         """foo"""
-        self.__logger = self.__setup_loger()
-        self.url = self.__validate_url(url)
+        logger = self.__setup_loger()
+        self.url = self.__validate_url(logger, url)
+        self.driver = self.__setup_selenium_driver(logger)
         self.api = f"https://online.seranking.com/research.competitor.html/organic/keywords?input=\
             {self.url}&mode=base_domain&source=eg"
 
@@ -56,7 +57,8 @@ class SEORanking():
             filemode="a")
         return logging.getLogger("Seo")
 
-    def __validate_url(self, url: str) -> str:
+    @staticmethod
+    def __validate_url(logger, url: str) -> str:
         """validate the url
             by removing the http:// or https:// or www.
             Args:
