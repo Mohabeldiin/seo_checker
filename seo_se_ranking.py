@@ -36,10 +36,10 @@ class SEORanking():
     def __init__(self, url: str):
         """foo"""
         logger = self.__setup_loger()
-        self.url = self.__validate_url(logger, url)
-        self.driver = self.__setup_selenium_driver(logger)
-        self.api = f"https://online.seranking.com/research.competitor.html/organic/keywords?input=\
-            {self.url}&mode=base_domain&source=eg"
+        url = self.__validate_url(logger, url)
+        driver = self.__setup_selenium_driver(logger)
+        api = f"https://online.seranking.com/research.competitor.html/organic/keywords?input={url}&mode=base_domain&source=eg" # pylint: disable=line-too-long
+        self.__open_seranking(logger, driver, api)
 
     @staticmethod
     def __setup_loger():
@@ -92,7 +92,7 @@ class SEORanking():
         """foo"""
         logger.debug("Setting up selenium")
         options = webdriver.ChromeOptions()
-        options.headless = True
+        options.headless = False
         try:
             driver = webdriver.Chrome(
                 executable_path="C:\\Program Files (x86)\\chromedriver.exe", options=options)
