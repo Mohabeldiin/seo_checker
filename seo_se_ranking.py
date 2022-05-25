@@ -163,7 +163,7 @@ class SEORanking():
                 """
         try:
             self.__logger.info("Extracting Organic traffic from SE Ranking")
-            organic_traffic = self.__get_organic_traffic(
+            total_traffic, keyworks, total_traffic_cost, backlinks = self.__get_organic_traffic(
                 self.__logger, self.__driver)
         except selenium_exceptions.TimeoutException as ex:
             self.__logger.critical("TimeoutException: %s", ex.__doc__)
@@ -175,6 +175,14 @@ class SEORanking():
             self.__logger.critical("Unable to open SE Ranking: %s", ex.__doc__)
             raise (f"Unable to open SE Ranking: {ex.__doc__}") from ex
         else:
+            organic_traffic = {
+                "Organic traffic": {
+                    "Total traffic": total_traffic,
+                    "Keywords": keyworks,
+                    "Total traffic cost": total_traffic_cost,
+                    "Backlinks": backlinks
+                }
+            }
             self.__logger.debug("Returning Organic traffic: %s", organic_traffic)
         return organic_traffic
 
@@ -183,12 +191,10 @@ class SEORanking():
         """Extracts Organic Traffic
 
         Returns:
-            dict: {
-                "Total traffic": int,
-                    "Keywords": int,
-                    "Total traffic cost": int,
-                    "Backlinks": int
-            }
+            "Total traffic": int,
+            "Keywords": int,
+            "Total traffic cost": int,
+            "Backlinks": int
 
         Raises:
             NoSuchElementException: if element is not found
@@ -213,16 +219,8 @@ class SEORanking():
             keyworks = elements.pop(0).text
             total_traffic_cost = elements.pop(0).text
             backlinks = elements.pop(0).text
-            organic_traffic = {
-                "Organic traffic": {
-                    "Total traffic": total_traffic,
-                    "Keywords": keyworks,
-                    "Total traffic cost": total_traffic_cost,
-                    "Backlinks": backlinks
-                }
-            }
-            logger.debug("Returning Organic traffic: %s", organic_traffic)
-        return organic_traffic
+            logger.debug("Returning Organic traffic values")
+        return total_traffic, keyworks, total_traffic_cost, backlinks
 
     def __robot_handeler(self, url: str):
         """Handles Google reCaptcha
