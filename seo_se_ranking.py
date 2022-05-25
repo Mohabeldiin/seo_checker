@@ -40,6 +40,7 @@ class SEORanking():
         self.__driver = self.__setup_selenium_driver(self.__logger)
         api = f"https://online.seranking.com/research.competitor.html/organic/keywords?input={url}&mode=base_domain&source=eg"  # pylint: disable=line-too-long
         self.__open_seranking(self.__logger, self.__driver, api)
+        self.__robot_handeler(url)
 
     @staticmethod
     def __setup_loger():
@@ -168,7 +169,24 @@ class SEORanking():
             logger.debug("Returning data: %s", data)
         return data
 
-    def __del__ (self):
+    def __robot_handeler(self, url: str):
+        """foo"""
+        try:
+            if WebDriverWait(self.__driver, timeout=5).until(
+                #I'm not a robot
+                    EC.presence_of_element_located((By.CLASS_NAME, "recaptcha-popup__body"))):
+                self.__logger.info("Robot handeler found")
+                self.__driver.refresh()
+                self.__robot_handeler(url)
+        except selenium_exceptions.TimeoutException:
+            self.__logger.info("Robot handeler not found")
+            return
+        except Exception as ex:
+            self.__logger.critical(
+                "Unable to to handle Google Robotes: %s", ex.__doc__)
+            raise (f"Unable to to handle Google Robotes: {ex.__doc__}") from ex
+
+    def __del__(self):
         """Tears down the driver"""
         self.__logger.debug("Tearing down driver")
         try:
