@@ -86,7 +86,7 @@ class SEORanking():
                 Exception: if unable to open selenium driver"""
         logger.debug("Setting up selenium")
         options = webdriver.ChromeOptions()
-        options.headless = False
+        options.headless = True
         try:
             driver = webdriver.Chrome(
                 executable_path="C:\\Program Files (x86)\\chromedriver.exe", options=options)
