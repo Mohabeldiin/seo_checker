@@ -38,7 +38,7 @@ class SEORanking():
         self.__logger = self.__setup_loger()
         url = self.__validate_url(self.__logger, url)
         self.__driver = self.__setup_selenium_driver(self.__logger)
-        api = f"https://online.seranking.com/research.competitor.html/organic/keywords?input={url}&mode=base_domain&source=eg" # pylint: disable=line-too-long
+        api = f"https://online.seranking.com/research.competitor.html/organic/keywords?input={url}&mode=base_domain&source=eg"  # pylint: disable=line-too-long
         self.__open_seranking(self.__logger, self.__driver, api)
         self.__tear_down(self.__driver, self.__logger)
 
