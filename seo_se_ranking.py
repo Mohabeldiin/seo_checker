@@ -93,7 +93,7 @@ class SEORanking():
         """foo"""
         logger.debug("Setting up selenium")
         options = webdriver.ChromeOptions()
-        options.headless = True
+        options.headless = False
         try:
             driver = webdriver.Chrome(
                 executable_path="C:\\Program Files (x86)\\chromedriver.exe", options=options)
@@ -132,9 +132,9 @@ class SEORanking():
 
     def get_seranking_data(self) -> dict:
         """foo"""
-        data = {}
+        data = []
         try:
-            data["seranking_data"] = self.__get_seranking_data(
+            data = self.__get_seranking_data(
                 self.__logger, self.__driver)
         except selenium_exceptions.TimeoutException as ex:
             self.__logger.critical("TimeoutException: %s", ex.__doc__)
@@ -152,10 +152,11 @@ class SEORanking():
     @staticmethod
     def __get_seranking_data(logger, driver) -> dict:
         """foo"""
-        data = {}
+        data = []
         try:
-            data["seranking_data"] = driver.find_element(By.ID,
-                "organic-keywords-table").text
+            elements = WebDriverWait(
+                driver, timeout=5).until(
+                    EC.presence_of_all_elements_located((By.CLASS_NAME, "keywords-traffic-chart-tab__value")))
         except selenium_exceptions.NoSuchElementException as ex:
             logger.critical("NoSuchElementException: %s", ex.__doc__)
             raise (f"NoSuchElementException: {ex.__doc__}") from ex
@@ -166,6 +167,18 @@ class SEORanking():
             logger.critical("Unable to open SE Ranking: %s", ex.__doc__)
             raise (f"Unable to open SE Ranking{ex.__doc__}") from ex
         else:
+            total_traffic = elements.pop(0).text
+            keyworks = elements.pop(0).text
+            total_traffic_cost = elements.pop(0).text
+            backlinks = elements.pop(0).text
+            data = {
+                "Organic traffic": {
+                    "Total traffic": total_traffic,
+                    "Keywords": keyworks,
+                    "Total traffic cost": total_traffic_cost,
+                    "Backlinks": backlinks
+                }
+            }
             logger.debug("Returning data: %s", data)
         return data
 
