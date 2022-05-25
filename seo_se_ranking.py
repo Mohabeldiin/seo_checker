@@ -108,7 +108,7 @@ class SEORanking():
     @staticmethod
     def __open_seranking(logger, driver, url):
         """Opens the seranking page
-        
+
         Args:
             logger (logging.Logger): logger
             driver (webdriver.Chrome): driver
@@ -172,7 +172,8 @@ class SEORanking():
                     "Backlinks": backlinks
                 }
             }
-            self.__logger.debug("Returning Organic traffic: %s", organic_traffic)
+            self.__logger.debug(
+                "Returning Organic traffic: %s", organic_traffic)
         return organic_traffic
 
     @staticmethod
@@ -213,15 +214,14 @@ class SEORanking():
 
     def __robot_handeler(self, url: str):
         """Handles Google reCaptcha
-        
+
         Args:
             url (str): url to be opened
-            
+
         Raises:
             Exception: if unable to Handel reCaptcha"""
         try:
             if WebDriverWait(self.__driver, timeout=5).until(
-                #I'm not a robot
                     EC.presence_of_element_located((By.CLASS_NAME, "recaptcha-popup__body"))):
                 self.__logger.info("Robot handeler found")
                 self.__driver.refresh()
@@ -245,6 +245,10 @@ class SEORanking():
         except Exception as ex:
             self.__logger.critical("Unable to quit driver: %s", ex.__doc__)
             raise (f"Unable to quit driver: {ex.__doc__}") from ex
+        else:
+            del self.__driver
+            self.__logger.debug("Tear Down Successfully.")
+            del self.__logger
 
 
 if __name__ == '__main__':
