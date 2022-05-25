@@ -1,24 +1,13 @@
 """"SEO Using SE Ranking: seranking.com"""
 
 import logging
-# import random
-# import string
 
-# try:
-#     from modules.temp_mail_api.TempMailAPI import TempMail
-# except (ImportError, ModuleNotFoundError) as e:
-#     logging.error("Module TempMailAPI not found: %s", e.__doc__)
-#     raise (f"Module TempMailAPI not found: {e.__doc__}") from e
 try:
     from modules.validators import url as url_validator
 except (ImportError, ModuleNotFoundError) as e:
     logging.error("Module validators not found: %s", e.__doc__)
     raise (f"Module validators not found: {e.__doc__}") from e
-# try:
-#     import requests
-# except (ImportError, ModuleNotFoundError) as e:
-#     logging.error("ImportError: requests: %s", e.__doc__)
-#     raise (f"ImportError: requests: " {e.__doc__}) from e
+
 try:
     from selenium import webdriver
     from selenium.common import exceptions as selenium_exceptions
