@@ -54,7 +54,7 @@ class SEORanking():
             datefmt='%Y-%m-%d %H:%M:%S',
             level=logging.DEBUG,
             filename='logs/seo_se_ranking.log',
-            filemode="a")
+            filemode="w")
         return logging.getLogger("Seo")
 
     @staticmethod
