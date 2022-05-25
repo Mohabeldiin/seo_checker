@@ -31,10 +31,10 @@ except (ImportError, ModuleNotFoundError) as e:
 
 
 class SEORanking():
-    """foo"""
+    """SEO Using SE Ranking: seranking.com"""
 
     def __init__(self, url: str):
-        """foo"""
+        """Initializes the class"""
         self.__logger = self.__setup_loger()
         url = self.__validate_url(self.__logger, url)
         self.__driver = self.__setup_selenium_driver(self.__logger)
@@ -50,7 +50,6 @@ class SEORanking():
             Returns:
                 logging.Logger: logger"""
         logging.basicConfig(
-
             format='%(asctime)s - %(name)s - %(levelname)s: %(message)s',
             datefmt='%Y-%m-%d %H:%M:%S',
             level=logging.DEBUG,
@@ -90,7 +89,12 @@ class SEORanking():
 
     @staticmethod
     def __setup_selenium_driver(logger) -> webdriver.Chrome:
-        """foo"""
+        """Sets up the selenium driver
+            Returns:
+                webdriver.Chrome: selenium driver
+            Raises:
+                WebDriverException: if unable to open selenium driver
+                Exception: if unable to open selenium driver"""
         logger.debug("Setting up selenium")
         options = webdriver.ChromeOptions()
         options.headless = False
@@ -114,7 +118,17 @@ class SEORanking():
 
     @staticmethod
     def __open_seranking(logger, driver, url):
-        """foo"""
+        """Opens the seranking page
+        
+        Args:
+            logger (logging.Logger): logger
+            driver (webdriver.Chrome): driver
+            url (str): url to open
+
+        Raises:
+            TimeoutException: if timeout
+            WebDriverException: if chrome driver not found
+            Exception: if any other exception"""
         try:
             driver.get(url)
         except selenium_exceptions.TimeoutException as ex:
@@ -131,7 +145,22 @@ class SEORanking():
             driver.implicitly_wait(5)
 
     def get_organic_traffic(self) -> dict:
-        """foo"""
+        """Extract the organic traffic from the SE Ranking
+
+        Returns:
+            dict: {
+                "Total traffic": int,
+                    "Keywords": int,
+                    "Total traffic cost": int,
+                    "Backlinks": int
+            }
+
+            Raises:
+                NoSuchElementException: if element is not found
+                WebDriverException: if unable to open SE Ranking
+                TimeoutException: if can't find element in time
+                Exception: if no organic traffic is found
+                """
         try:
             self.__logger.info("Extracting Organic traffic from SE Ranking")
             organic_traffic = self.__get_organic_traffic(
@@ -151,7 +180,20 @@ class SEORanking():
 
     @staticmethod
     def __get_organic_traffic(logger, driver) -> dict:
-        """foo"""
+        """Extracts Organic Traffic
+
+        Returns:
+            dict: {
+                "Total traffic": int,
+                    "Keywords": int,
+                    "Total traffic cost": int,
+                    "Backlinks": int
+            }
+
+        Raises:
+            NoSuchElementException: if element is not found
+            WebDriverException: if unable to open SE Ranking
+            Exception: if no organic traffic is found"""
         try:
             elements = WebDriverWait(
                 driver, timeout=5).until(
@@ -183,7 +225,13 @@ class SEORanking():
         return organic_traffic
 
     def __robot_handeler(self, url: str):
-        """foo"""
+        """Handles Google reCaptcha
+        
+        Args:
+            url (str): url to be opened
+            
+        Raises:
+            Exception: if unable to Handel reCaptcha"""
         try:
             if WebDriverWait(self.__driver, timeout=5).until(
                 #I'm not a robot
