@@ -212,6 +212,45 @@ class SEORanking():
             logger.debug("Returning Organic traffic values")
         return total_traffic, keyworks, total_traffic_cost, backlinks
 
+    def get_keywords(self):
+        """foo"""
+        self.__logger.info("Attempting to Extract keywords from SE Ranking")
+        keywords = self.__get_keywords(self.__logger, self.__driver)
+        self.__logger.debug("Returning keywords: %s", keywords)
+        return keywords
+
+    @staticmethod
+    def __get_keywords(logger, driver):
+        """Extracts keywords
+
+        Returns:
+            list: list of keywords
+
+        Raises:
+            NoSuchElementException: if element is not found
+            WebDriverException: if unable to open SE Ranking
+            Exception: if no keywords are found"""
+        keywords = []
+        for index in range(1, 10):
+            try:
+                element = WebDriverWait(
+                    driver, timeout=100).until(
+                        EC.presence_of_element_located(
+                            (By.XPATH, f'//*[@id="app"]/div[2]/div[2]/div[1]/div[2]/div[3]/div/section[2]/div/div/div/div[1]/div[2]/div/div[1]/div[1]/div/table/tbody/tr[{str(index)}]/td[1]/div/div/div[2]/a')))  # pylint: disable=line-too-long
+            except selenium_exceptions.NoSuchElementException as ex:
+                logger.critical("NoSuchElementException: %s", ex.__doc__)
+                raise (f"NoSuchElementException: {ex.__doc__}") from ex
+            except selenium_exceptions.WebDriverException as ex:
+                logger.critical("Unable to open SE Ranking: %s", ex.__doc__)
+                raise (f"Unable to open SE Ranking{ex.__doc__}") from ex
+            except Exception as ex:
+                logger.critical("Unable to open SE Ranking: %s", ex.__doc__)
+                raise (f"Unable to open SE Ranking{ex.__doc__}") from ex
+            else:
+                keywords.append(element.text)
+                logger.debug("Keyword: %s", element.text)
+        return keywords
+
     def __robot_handeler(self, url: str):
         """Handles Google reCaptcha
 
@@ -254,3 +293,5 @@ class SEORanking():
 if __name__ == '__main__':
     seo = SEORanking("https://www.google.com")
     print(seo.get_organic_traffic())
+    print(seo.get_keywords())
+    del seo
