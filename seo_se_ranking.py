@@ -130,11 +130,11 @@ class SEORanking():
             driver.maximize_window()
             driver.implicitly_wait(5)
 
-    def get_seranking_data(self) -> dict:
+    def get_organic_traffic(self) -> dict:
         """foo"""
-        data = []
         try:
-            data = self.__get_seranking_data(
+            self.__logger.info("Extracting Organic traffic from SE Ranking")
+            organic_traffic = self.__get_organic_traffic(
                 self.__logger, self.__driver)
         except selenium_exceptions.TimeoutException as ex:
             self.__logger.critical("TimeoutException: %s", ex.__doc__)
@@ -146,17 +146,17 @@ class SEORanking():
             self.__logger.critical("Unable to open SE Ranking: %s", ex.__doc__)
             raise (f"Unable to open SE Ranking: {ex.__doc__}") from ex
         else:
-            self.__logger.debug("Returning data: %s", data)
-        return data
+            self.__logger.debug("Returning Organic traffic: %s", organic_traffic)
+        return organic_traffic
 
     @staticmethod
-    def __get_seranking_data(logger, driver) -> dict:
+    def __get_organic_traffic(logger, driver) -> dict:
         """foo"""
-        data = []
         try:
             elements = WebDriverWait(
                 driver, timeout=5).until(
-                    EC.presence_of_all_elements_located((By.CLASS_NAME, "keywords-traffic-chart-tab__value")))
+                    EC.presence_of_all_elements_located(
+                        (By.CLASS_NAME, "keywords-traffic-chart-tab__value")))
         except selenium_exceptions.NoSuchElementException as ex:
             logger.critical("NoSuchElementException: %s", ex.__doc__)
             raise (f"NoSuchElementException: {ex.__doc__}") from ex
@@ -171,7 +171,7 @@ class SEORanking():
             keyworks = elements.pop(0).text
             total_traffic_cost = elements.pop(0).text
             backlinks = elements.pop(0).text
-            data = {
+            organic_traffic = {
                 "Organic traffic": {
                     "Total traffic": total_traffic,
                     "Keywords": keyworks,
@@ -179,8 +179,8 @@ class SEORanking():
                     "Backlinks": backlinks
                 }
             }
-            logger.debug("Returning data: %s", data)
-        return data
+            logger.debug("Returning Organic traffic: %s", organic_traffic)
+        return organic_traffic
 
     def __robot_handeler(self, url: str):
         """foo"""
@@ -214,4 +214,4 @@ class SEORanking():
 
 if __name__ == '__main__':
     seo = SEORanking("https://www.google.com")
-    print(seo.get_seranking_data())
+    print(seo.get_organic_traffic())
