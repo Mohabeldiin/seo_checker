@@ -40,7 +40,6 @@ class SEORanking():
         self.__driver = self.__setup_selenium_driver(self.__logger)
         api = f"https://online.seranking.com/research.competitor.html/organic/keywords?input={url}&mode=base_domain&source=eg"  # pylint: disable=line-too-long
         self.__open_seranking(self.__logger, self.__driver, api)
-        self.__tear_down(self.__driver, self.__logger)
 
     @staticmethod
     def __setup_loger():
@@ -169,17 +168,16 @@ class SEORanking():
             logger.debug("Returning data: %s", data)
         return data
 
-    @staticmethod
-    def __tear_down(driver, logger) -> None:
+    def __del__ (self):
         """Tears down the driver"""
-        logger.debug("Tearing down driver")
+        self.__logger.debug("Tearing down driver")
         try:
-            driver.quit()
+            self.__driver.quit()
         except selenium_exceptions.WebDriverException as ex:
-            logger.critical("Unable to quit driver: %s", ex.__doc__)
+            self.__logger.critical("Unable to quit driver: %s", ex.__doc__)
             raise (f"Unable to quit driver: {ex.__doc__}") from ex
         except Exception as ex:
-            logger.critical("Unable to quit driver: %s", ex.__doc__)
+            self.__logger.critical("Unable to quit driver: %s", ex.__doc__)
             raise (f"Unable to quit driver: {ex.__doc__}") from ex
 
 
