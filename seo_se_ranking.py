@@ -217,7 +217,20 @@ class SEORanking():
         self.__logger.info("Attempting to Extract keywords from SE Ranking")
         keywords = self.__get_keywords(self.__logger, self.__driver)
         self.__logger.debug("Returning keywords: %s", keywords)
-        return keywords
+        result = {
+            "1": keywords[0],
+            "2": keywords[1],
+            "3": keywords[2],
+            "4": keywords[3],
+            "5": keywords[4],
+            "6": keywords[5],
+            "7": keywords[6],
+            "8": keywords[7],
+            "9": keywords[8],
+            "10": keywords[9]
+        }
+        self.__logger.debug("Returning result: %s", result)
+        return result
 
     @staticmethod
     def __get_keywords(logger, driver):
@@ -231,7 +244,7 @@ class SEORanking():
             WebDriverException: if unable to open SE Ranking
             Exception: if no keywords are found"""
         keywords = []
-        for index in range(1, 10):
+        for index in range(1, 11):
             try:
                 element = WebDriverWait(
                     driver, timeout=100).until(
@@ -273,6 +286,18 @@ class SEORanking():
                 "Unable to to handle Google Robotes: %s", ex.__doc__)
             raise (f"Unable to to handle Google Robotes: {ex.__doc__}") from ex
 
+    def get_result(self):
+        """foo"""
+        self.__logger.info("Attempting to Extract result from SE Ranking")
+        organic_traffic = self.get_organic_traffic()
+        keywords = self.get_keywords()
+        result = {
+            "Organic traffic": organic_traffic,
+            "Keywords": keywords
+        }
+        self.__logger.debug("Returning result: %s", result)
+        return result
+
     def __del__(self):
         """Tears down the driver"""
         self.__logger.debug("Tearing down driver")
@@ -292,6 +317,5 @@ class SEORanking():
 
 if __name__ == '__main__':
     seo = SEORanking("https://www.google.com")
-    print(seo.get_organic_traffic())
-    print(seo.get_keywords())
+    print(seo.get_result())
     del seo
